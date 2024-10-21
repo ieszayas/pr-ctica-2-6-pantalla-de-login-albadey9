@@ -10,13 +10,13 @@ package VistaControlador;
  */
 public class Principal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Principal
-     */
-    public Principal() {
+    public Principal(String username) {
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
+
+        texto_bienvenida.setText("El usuario " + username + " está logueado");
+        
     }
 
     /**
@@ -31,6 +31,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         boton_cerrarsesion = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        texto_bienvenida = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Principal");
@@ -65,6 +66,10 @@ public class Principal extends javax.swing.JFrame {
                                 .addComponent(jLabel1)))
                         .addGap(0, 119, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(133, 133, 133)
+                .addComponent(texto_bienvenida)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -73,7 +78,9 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(texto_bienvenida)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
                 .addComponent(boton_cerrarsesion)
                 .addGap(22, 22, 22))
         );
@@ -82,8 +89,11 @@ public class Principal extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+
     private void boton_cerrarsesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_cerrarsesionActionPerformed
-        System.exit(0);
+        Login login = new Login();
+        login.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_boton_cerrarsesionActionPerformed
 
     /**
@@ -116,7 +126,7 @@ public class Principal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Principal().setVisible(true);
+                new Principal("").setVisible(true);
             }
         });
     }
@@ -125,5 +135,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton boton_cerrarsesion;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel texto_bienvenida;
     // End of variables declaration//GEN-END:variables
 }

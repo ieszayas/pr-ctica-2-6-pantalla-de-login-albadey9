@@ -4,6 +4,7 @@
  */
 package VistaControlador;
 
+import Modelo.Loguear;
 import javax.swing.JOptionPane;
 
 /**
@@ -126,12 +127,44 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_check_mostrarActionPerformed
 
+    public void vibrarPantalla() {
+        final int originalX = this.getLocationOnScreen().x;  // Obtener la posición original en X
+        final int originalY = this.getLocationOnScreen().y;  // Obtener la posición original en Y
+
+        // Creamos un hilo para que no bloquee el hilo principal de la UI
+        new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    // Mover la ventana a posiciones levemente distintas
+                    this.setLocation(originalX + (int) (Math.random() * 10 - 5),
+                            originalY + (int) (Math.random() * 10 - 5));
+                    Thread.sleep(20);  // Pausa breve entre cada movimiento
+                }
+                // Volver a la posición original al finalizar
+                this.setLocation(originalX, originalY);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private void boton_loguearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_loguearActionPerformed
         String user = usuario.getText();
         String password = String.valueOf(txt_contrasena.getPassword());
-
+        Loguear loguear = new Loguear();
         if (user.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor rellena el campo", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (loguear.validar(user, password)) {
+            Principal principal = new Principal(user);
+            principal.setVisible(true);
+        } else {
+            vibrarPantalla();
+            JOptionPane.showMessageDialog(this, "Por favor, no se ha podido realizar, vuelva a intentarlo", "Error", JOptionPane.ERROR_MESSAGE);
+            usuario.setText("");
+            txt_contrasena.setText("");
+            return;
         }
 
 

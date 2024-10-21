@@ -19,7 +19,7 @@ public class Loguear {
 
     public static boolean validar(String usuario, String contrasena) {
         for (Usuario usuario1 : arr_user) {
-            if (usuario1.getUsuario().equals(arr_user) && usuario1.getContrasena().equals(arr_user)) {
+            if (usuario1.getUsuario().equals(usuario) && usuario1.getContrasena().equals(contrasena)) {
                 return true;
             }
         }
