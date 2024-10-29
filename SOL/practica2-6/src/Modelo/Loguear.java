@@ -13,16 +13,11 @@ public class Loguear {
         arr_user.add(new Usuario("Diego", "1234"));
     }
 
-    public static ArrayList<Usuario> getArr_user() {
-        return arr_user;
+    public static void setArr_user(ArrayList<Usuario> arr_user) {
+        Loguear.arr_user = arr_user;
     }
 
-    public static boolean validar(String usuario, String contrasena) {
-        for (Usuario usuario1 : arr_user) {
-            if (usuario1.getUsuario().equals(usuario) && usuario1.getContrasena().equals(contrasena)) {
-                return true;
-            }
-        }
-        return false;
+    public static ArrayList<Usuario> getArr_user() {
+        return arr_user;
     }
 }

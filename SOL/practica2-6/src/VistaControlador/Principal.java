@@ -16,7 +16,7 @@ public class Principal extends javax.swing.JFrame {
         setResizable(false);
 
         texto_bienvenida.setText("El usuario " + username + " está logueado");
-        
+
     }
 
     /**

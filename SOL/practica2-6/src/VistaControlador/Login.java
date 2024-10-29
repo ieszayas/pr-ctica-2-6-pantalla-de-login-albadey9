@@ -4,7 +4,8 @@
  */
 package VistaControlador;
 
-import Modelo.Loguear;
+import BD.Bbdd;
+import Modelo.Usuario;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,6 +21,8 @@ public class Login extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
+        Bbdd.crearBBDD();
+
     }
 
     /**
@@ -38,6 +41,8 @@ public class Login extends javax.swing.JFrame {
         txt_contrasena = new javax.swing.JPasswordField();
         check_mostrar = new javax.swing.JCheckBox();
         boton_loguear = new javax.swing.JButton();
+        texto_error = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login");
@@ -68,35 +73,52 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
+        texto_error.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                texto_errorMouseReleased(evt);
+            }
+        });
+
+        jLabel2.setText("Haz click para crear una cuenta nueva");
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel2MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(57, 57, 57)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(texto_contrasena)
                             .addComponent(texto_usuario))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(usuario)
-                            .addComponent(txt_contrasena)
-                            .addComponent(boton_loguear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(18, 18, 18)
-                .addComponent(check_mostrar)
-                .addContainerGap(21, Short.MAX_VALUE))
+                            .addComponent(usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txt_contrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(check_mostrar))
+                            .addComponent(jLabel2)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(texto_error, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(boton_loguear, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)))))
+                .addGap(10, 10, 10))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(59, 59, 59)
                 .addComponent(jLabel1)
-                .addGap(34, 34, 34)
+                .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(texto_usuario)
                     .addComponent(usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -106,9 +128,13 @@ public class Login extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txt_contrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(check_mostrar)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(24, 24, 24)
                 .addComponent(boton_loguear)
-                .addGap(47, 47, 47))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(texto_error, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14))
         );
 
         pack();
@@ -149,26 +175,41 @@ public class Login extends javax.swing.JFrame {
     }
 
     private void boton_loguearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_loguearActionPerformed
+
         String user = usuario.getText();
         String password = String.valueOf(txt_contrasena.getPassword());
-        Loguear loguear = new Loguear();
+        Usuario u = new Usuario(user, password);
+
         if (user.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor rellena el campo", "Error", JOptionPane.ERROR_MESSAGE);
+            texto_error.setText("Por favor, rellene el campo");
+            vibrarPantalla();
             return;
         }
-        if (loguear.validar(user, password)) {
+
+        // Llama al método validar con el nombre de usuario y contraseña
+        // Validar usuario en la base de datos
+        if (Bbdd.validarUsuario(u)) {
             Principal principal = new Principal(user);
             principal.setVisible(true);
+            this.dispose(); // Cierra la ventana de login
         } else {
             vibrarPantalla();
-            JOptionPane.showMessageDialog(this, "Por favor, no se ha podido realizar, vuelva a intentarlo", "Error", JOptionPane.ERROR_MESSAGE);
+            texto_error.setText("El logueo no ha sido correcto, vuelva a intentarlo");
             usuario.setText("");
             txt_contrasena.setText("");
-            return;
         }
 
 
     }//GEN-LAST:event_boton_loguearActionPerformed
+
+    private void texto_errorMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_texto_errorMouseReleased
+
+    }//GEN-LAST:event_texto_errorMouseReleased
+
+    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+        AgregarNuevoUsuario agregar = new AgregarNuevoUsuario();
+        agregar.setVisible(true);
+    }//GEN-LAST:event_jLabel2MouseClicked
 
     /**
      * @param args the command line arguments
@@ -210,7 +251,9 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JButton boton_loguear;
     private javax.swing.JCheckBox check_mostrar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel texto_contrasena;
+    private javax.swing.JLabel texto_error;
     private javax.swing.JLabel texto_usuario;
     private javax.swing.JPasswordField txt_contrasena;
     private javax.swing.JTextField usuario;
