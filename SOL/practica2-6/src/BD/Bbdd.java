@@ -3,6 +3,7 @@ package BD;
 import static BD.Conexion.getConexion;
 import Modelo.Usuario;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +24,7 @@ public class Bbdd {
             PreparedStatement ps_use = getConexion().prepareStatement(sql_use);
             ps_use.executeUpdate();
 
-            String sql_tabla = "CREATE TABLE IF NOT EXISTS " + NOMBRE_TABLA + " (usuario VARCHAR(20), contrasena VARCHAR(20), nombre VARCHAR(20), apellidos VARCHAR(20), fecha_nac VARCHAR(20), correo VARCHAR(20), PRIMARY KEY(usuario))";
+            String sql_tabla = "CREATE TABLE IF NOT EXISTS " + NOMBRE_TABLA + " (usuario VARCHAR(20), contrasena VARCHAR(20), nombre VARCHAR(20), apellidos VARCHAR(20), fecha_nac DATE, correo VARCHAR(255), PRIMARY KEY(usuario))";
             PreparedStatement ps_tabla = getConexion().prepareStatement(sql_tabla);
             ps_tabla.executeUpdate();
         } catch (SQLException e) {
@@ -40,22 +41,26 @@ public class Bbdd {
             stmt.setString(2, u.getContrasena());
             stmt.setString(3, u.getNombre());
             stmt.setString(4, u.getApellidos());
-            stmt.setString(5, u.getFecha_nac());
+
+            // Convertir java.util.Date a java.sql.Date
+            Date sqlDate = new Date(u.getFecha_nac().getTime());
+            stmt.setDate(5, sqlDate);
+
             stmt.setString(6, u.getCorreo());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("No se ha creado el usuario" + e.getMessage());
+            System.out.println("No se ha creado el usuario: " + e.getMessage());
             return false;
         }
     }
 
-    public static boolean verificarUsuario(Usuario u) {
+    public static boolean verificarUsuario(String u) {
         String sql = "SELECT * FROM " + NOMBRE_TABLA + " WHERE usuario = ?";
         Connection conn = getConexion();
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, u.getUsuario());
+            stmt.setString(1, u);
             ResultSet rs = stmt.executeQuery();
             return rs.next();
         } catch (SQLException e) {
@@ -64,6 +69,7 @@ public class Bbdd {
             throw new RuntimeException("Error al verificar el usuario en la base de datos", e);
         }
     }
+
     public static boolean validarUsuario(Usuario u) {
         String sql = "SELECT * FROM " + NOMBRE_TABLA + " WHERE usuario = ? AND contrasena = ?";
         Connection conn = getConexion();
@@ -79,4 +85,49 @@ public class Bbdd {
             throw new RuntimeException("Error al verificar el usuario en la base de datos", e);
         }
     }
+
+    public static boolean modificarUsuario(Usuario u) {
+
+        String sql = "UPDATE " + NOMBRE_TABLA + " SET contrasena = ? WHERE usuario = ?";
+        Connection conn = getConexion();
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, u.getContrasena());
+            stmt.setString(2, u.getUsuario()); // Este es el criterio de búsqueda
+            stmt.execute();
+        } catch (SQLException e) {
+            System.out.println("No se ha podido actualizar el usuario: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public static Usuario seleccionarUsuario(String username) {
+        String sql = "SELECT * FROM " + NOMBRE_TABLA + " WHERE usuario = ?";
+        Connection conn = getConexion();
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // Crear el objeto Usuario y asignar los valores obtenidos de la base de datos
+                Usuario usuario = new Usuario();
+                usuario.setUsuario(rs.getString("usuario"));
+                usuario.setContrasena(rs.getString("contrasena"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setApellidos(rs.getString("apellidos"));
+                 usuario.setFecha_nac(rs.getDate("fecha_nac"));
+                usuario.setCorreo(rs.getString("correo"));
+
+                return usuario; // Devolver el objeto Usuario
+            }
+            return null;
+        } catch (SQLException e) {
+            System.out.println("Error al verificar el usuario: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

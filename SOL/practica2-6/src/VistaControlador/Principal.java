@@ -4,19 +4,28 @@
  */
 package VistaControlador;
 
+import Modelo.Usuario;
+
 /**
  *
  * @author DAM2_06
  */
 public class Principal extends javax.swing.JFrame {
 
+    private String usuario;
+
     public Principal(String username) {
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
-
         texto_bienvenida.setText("El usuario " + username + " está logueado");
+        usuario = username;
+    }
 
+    public Principal() {
+        initComponents();
+        setLocationRelativeTo(null);
+        setResizable(false);
     }
 
     /**
@@ -32,10 +41,13 @@ public class Principal extends javax.swing.JFrame {
         boton_cerrarsesion = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         texto_bienvenida = new javax.swing.JLabel();
+        boton_nuevo_usuario = new javax.swing.JButton();
+        modificar_contraseña = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Principal");
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel1.setText("Bienvenid@");
 
         boton_cerrarsesion.setText("Cerrar sesión");
@@ -47,6 +59,20 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/VistaControlador/image-removebg-preview.png"))); // NOI18N
 
+        boton_nuevo_usuario.setText("Nuevo usuario");
+        boton_nuevo_usuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boton_nuevo_usuarioActionPerformed(evt);
+            }
+        });
+
+        modificar_contraseña.setText("Modificar contraseña");
+        modificar_contraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modificar_contraseñaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -55,32 +81,35 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(boton_cerrarsesion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(119, 119, 119)
-                                .addComponent(jLabel2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(162, 162, 162)
-                                .addComponent(jLabel1)))
-                        .addGap(0, 119, Short.MAX_VALUE)))
+                            .addComponent(modificar_contraseña, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(boton_nuevo_usuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(texto_bienvenida, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(boton_cerrarsesion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(148, 148, 148)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(133, 133, 133)
-                .addComponent(texto_bienvenida)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(112, 112, 112)
+                .addComponent(jLabel2)
+                .addContainerGap(132, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(texto_bienvenida)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                .addGap(12, 12, 12)
+                .addComponent(texto_bienvenida, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addComponent(modificar_contraseña)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(boton_nuevo_usuario)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(boton_cerrarsesion)
                 .addGap(22, 22, 22))
         );
@@ -95,6 +124,18 @@ public class Principal extends javax.swing.JFrame {
         login.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_boton_cerrarsesionActionPerformed
+
+    private void boton_nuevo_usuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_nuevo_usuarioActionPerformed
+        AgregarNuevoUsuario nuevo = new AgregarNuevoUsuario();
+        nuevo.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_boton_nuevo_usuarioActionPerformed
+
+    private void modificar_contraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificar_contraseñaActionPerformed
+        NuevaContrasena nueva = new NuevaContrasena(usuario);
+        nueva.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_modificar_contraseñaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -133,8 +174,10 @@ public class Principal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton boton_cerrarsesion;
+    private javax.swing.JButton boton_nuevo_usuario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton modificar_contraseña;
     private javax.swing.JLabel texto_bienvenida;
     // End of variables declaration//GEN-END:variables
 }

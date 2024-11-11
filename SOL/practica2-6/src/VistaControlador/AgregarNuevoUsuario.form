@@ -46,10 +46,10 @@
                               <Component id="texto_nombre_nuevo" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="correo_nuevo" pref="193" max="32767" attributes="0"/>
-                                  <Component id="fecha_nuevo" max="32767" attributes="0"/>
+                                  <Component id="correo_nuevo" max="32767" attributes="0"/>
                                   <Component id="apellido_nuevo" max="32767" attributes="0"/>
                                   <Component id="nombre_nuevo" max="32767" attributes="0"/>
+                                  <Component id="fecha_nuevo" alignment="0" min="-2" pref="211" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -118,12 +118,12 @@
                   <Component id="texto_apellido_nuevo" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="apellido_nuevo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="texto_fecha_nuevo" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="fecha_nuevo" alignment="3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="texto_fecha_nuevo" min="-2" max="-2" attributes="0"/>
+                  <Component id="fecha_nuevo" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="texto_correo_nuevo" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="correo_nuevo" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -213,9 +213,10 @@
     </Component>
     <Component class="javax.swing.JTextField" name="apellido_nuevo">
     </Component>
-    <Component class="javax.swing.JTextField" name="fecha_nuevo">
-    </Component>
     <Component class="javax.swing.JTextField" name="correo_nuevo">
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="correo_nuevoKeyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JPasswordField" name="contrasena_nueva">
     </Component>
@@ -228,6 +229,8 @@
       <Events>
         <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="texto_existe_usuarioMouseReleased"/>
       </Events>
+    </Component>
+    <Component class="com.toedter.calendar.JDateChooser" name="fecha_nuevo">
     </Component>
   </SubComponents>
 </Form>

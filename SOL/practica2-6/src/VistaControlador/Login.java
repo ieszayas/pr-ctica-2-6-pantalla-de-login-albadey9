@@ -209,6 +209,7 @@ public class Login extends javax.swing.JFrame {
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
         AgregarNuevoUsuario agregar = new AgregarNuevoUsuario();
         agregar.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jLabel2MouseClicked
 
     /**

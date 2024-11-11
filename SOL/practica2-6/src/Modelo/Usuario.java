@@ -2,15 +2,16 @@ package Modelo;
 
 import static Modelo.Loguear.arr_user;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Usuario {
 
-    private String usuario = "no";
-    private String contrasena = "no";
-    private String nombre;
-    private String apellidos;
-    private String fecha_nac;
-    private String correo;
+    private String usuario = "";
+    private String contrasena = "";
+    private String nombre = "";
+    private String apellidos = "";
+    private Date fecha_nac;
+    private String correo = "";
     public static ArrayList<Usuario> arr_user = new ArrayList<Usuario>();
 
     public Usuario() {
@@ -33,7 +34,11 @@ public class Usuario {
         this.contrasena = contrasena;
     }
 
-    public Usuario(String usuario, String contrasena, String nombre, String apellidos, String fecha_nac, String correo) {
+    public Usuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public Usuario(String usuario, String contrasena, String nombre, String apellidos, Date fecha_nac, String correo) {
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.nombre = nombre;
@@ -74,11 +79,11 @@ public class Usuario {
         this.apellidos = apellidos;
     }
 
-    public String getFecha_nac() {
+    public Date getFecha_nac() {
         return fecha_nac;
     }
 
-    public void setFecha_nac(String fecha_nac) {
+    public void setFecha_nac(Date fecha_nac) {
         this.fecha_nac = fecha_nac;
     }
 
@@ -93,16 +98,6 @@ public class Usuario {
     @Override
     public String toString() {
         return "Usuario{" + "usuario=" + usuario + ", contrasena=" + contrasena + '}';
-    }
-
-    // Método para validar las credenciales contra el array de usuarios
-    public static boolean validar(String user, String password, ArrayList<Usuario> arr_user) {
-        for (Usuario usuario : arr_user) {
-            if (usuario.getUsuario().equals(user) && usuario.getContrasena().equals(password)) {
-                return true; // Credenciales válidas
-            }
-        }
-        return false; // Credenciales no válidas
     }
 
 }

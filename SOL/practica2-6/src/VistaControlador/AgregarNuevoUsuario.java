@@ -7,9 +7,17 @@ package VistaControlador;
 import BD.Bbdd;
 import Modelo.Usuario;
 import java.awt.Color;
+import com.toedter.calendar.JDateChooser;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -20,6 +28,8 @@ public class AgregarNuevoUsuario extends javax.swing.JFrame {
     /**
      * Creates new form AgregarNuevoUsuario
      */
+    private boolean flag = false;
+
     public AgregarNuevoUsuario() {
         initComponents();
         setLocationRelativeTo(null);
@@ -51,11 +61,11 @@ public class AgregarNuevoUsuario extends javax.swing.JFrame {
         usuario_nuevo = new javax.swing.JTextField();
         nombre_nuevo = new javax.swing.JTextField();
         apellido_nuevo = new javax.swing.JTextField();
-        fecha_nuevo = new javax.swing.JTextField();
         correo_nuevo = new javax.swing.JTextField();
         contrasena_nueva = new javax.swing.JPasswordField();
         confirmar_contrasena_nueva = new javax.swing.JPasswordField();
         texto_existe_usuario = new javax.swing.JLabel();
+        fecha_nuevo = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,6 +107,12 @@ public class AgregarNuevoUsuario extends javax.swing.JFrame {
             }
         });
 
+        correo_nuevo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                correo_nuevoKeyReleased(evt);
+            }
+        });
+
         confirmar_contrasena_nueva.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 confirmar_contrasena_nuevaActionPerformed(evt);
@@ -134,10 +150,10 @@ public class AgregarNuevoUsuario extends javax.swing.JFrame {
                                 .addComponent(texto_nombre_nuevo)
                                 .addGap(60, 60, 60)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(correo_nuevo, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
-                                    .addComponent(fecha_nuevo)
+                                    .addComponent(correo_nuevo)
                                     .addComponent(apellido_nuevo)
-                                    .addComponent(nombre_nuevo)))))
+                                    .addComponent(nombre_nuevo)
+                                    .addComponent(fecha_nuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(15, 15, 15)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -188,11 +204,11 @@ public class AgregarNuevoUsuario extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(texto_apellido_nuevo)
                     .addComponent(apellido_nuevo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(42, 42, 42)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(texto_fecha_nuevo)
                     .addComponent(fecha_nuevo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
+                .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(texto_correo_nuevo)
                     .addComponent(correo_nuevo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -225,44 +241,61 @@ public class AgregarNuevoUsuario extends javax.swing.JFrame {
         String contrasena = String.valueOf(contrasena_nueva.getPassword());
         String nombre = nombre_nuevo.getText();
         String apellidos = apellido_nuevo.getText();
-        String fecha_nac = fecha_nuevo.getText();
+        Date fecha_nac = fecha_nuevo.getDate();
         String correo = correo_nuevo.getText();
 
-        if (confirmar_contrasena_nueva()) {
-            Usuario user = new Usuario(us, contrasena, nombre, apellidos, fecha_nac, correo);
-            Bbdd base_datos = new Bbdd();
-
-            if (!Bbdd.verificarUsuario(user)) {
-                Bbdd.registrarUsuario(user);  // Si no existe, registrar el usuario
-                texto_existe_usuario.setText("Usuario registrado correctamente");
-            } else {
-                texto_existe_usuario.setText("Ya existe un usuario con ese nombre");
-            }
-
+        if (Bbdd.verificarUsuario(usuario_nuevo.getText())) {
+            texto_existe_usuario.setText("Ya existe un usuario con ese nombre");
+            return;
         }
+
+        if (!confirmar_contrasena_nueva()) {
+            texto_existe_usuario.setText("Las contraseñas no coinciden");
+            return;
+        }
+
+        if (flag) {
+            texto_existe_usuario.setText("El correo no es válido");
+            return;
+        }
+
+        if (nombre.isBlank()) {
+            nombre_nuevo.setBorder(new LineBorder(Color.RED));
+            return;
+        }
+        nombre_nuevo.setBorder(new LineBorder(Color.GRAY));
+        if (apellidos.isBlank()) {
+            apellido_nuevo.setBorder(new LineBorder(Color.RED));
+            return;
+        }
+        apellido_nuevo.setBorder(new LineBorder(Color.GRAY));
+        
+        if (correo.isBlank()) {
+            correo_nuevo.setBorder(new LineBorder(Color.RED));
+            return;
+        }
+        correo_nuevo.setBorder(new LineBorder(Color.GRAY));
+
+        Bbdd.registrarUsuario(new Usuario(us, contrasena, nombre, apellidos, fecha_nac, correo));  // Si no existe, registrar el usuario
+        texto_existe_usuario.setText("Usuario registrado correctamente");
+
 
     }//GEN-LAST:event_boton_agregarActionPerformed
 
-     public boolean confirmar_contrasena_nueva() {
+    public boolean confirmar_contrasena_nueva() {
         String contrasena = String.valueOf(contrasena_nueva.getPassword());
         String confirmar_contrasena = String.valueOf(confirmar_contrasena_nueva.getPassword());
-
-        // Crear un borde para indicar error
-        Border borderRojo = BorderFactory.createLineBorder(Color.RED, 1); // Borde rojo de 1 píxel
-        Border borderNormal = BorderFactory.createLineBorder(Color.GRAY, 1); // Borde normal de 1 píxel
 
         // Verificar si las contraseñas son iguales
         if (!confirmar_contrasena.equals(contrasena)) {
             // Si no son iguales, establecer el borde rojo
-            this.confirmar_contrasena_nueva.setBorder(borderRojo);
+            confirmar_contrasena_nueva.setBorder(new LineBorder(Color.RED));
             return false;
         } else {
-            // Si son iguales, establecer el borde normal (o el borde que tenías antes)
-            this.confirmar_contrasena_nueva.setBorder(borderNormal);
+            confirmar_contrasena_nueva.setBorder(new LineBorder(Color.GRAY));
             return true;
         }
     }
-    
     private void confirmar_contrasena_nuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmar_contrasena_nuevaActionPerformed
 
     }//GEN-LAST:event_confirmar_contrasena_nuevaActionPerformed
@@ -270,6 +303,20 @@ public class AgregarNuevoUsuario extends javax.swing.JFrame {
     private void texto_existe_usuarioMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_texto_existe_usuarioMouseReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_texto_existe_usuarioMouseReleased
+
+    private void correo_nuevoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_correo_nuevoKeyReleased
+        String regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        Border borderRojo = BorderFactory.createLineBorder(Color.RED, 1);
+        Border borderNormal = BorderFactory.createLineBorder(Color.GRAY, 1);
+        if (!correo_nuevo.getText().matches(regex)) {
+            flag = true;
+            correo_nuevo.setBorder(borderRojo);
+            return;
+        }
+        flag = false;
+        correo_nuevo.setBorder(borderNormal);
+
+    }//GEN-LAST:event_correo_nuevoKeyReleased
 
     /**
      * @param args the command line arguments
@@ -314,7 +361,7 @@ public class AgregarNuevoUsuario extends javax.swing.JFrame {
     private javax.swing.JPasswordField confirmar_contrasena_nueva;
     private javax.swing.JPasswordField contrasena_nueva;
     private javax.swing.JTextField correo_nuevo;
-    private javax.swing.JTextField fecha_nuevo;
+    private com.toedter.calendar.JDateChooser fecha_nuevo;
     private javax.swing.JLabel info_nuevo_usuario;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField nombre_nuevo;
